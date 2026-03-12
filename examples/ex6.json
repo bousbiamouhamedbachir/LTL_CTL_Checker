@@ -1,0 +1,22 @@
+{
+  "states": [
+    {"name": "s0", "props": ["p"]},
+    {"name": "s1", "props": ["p", "q"]},
+    {"name": "s2", "props": ["q"]},
+    {"name": "s3", "props": ["p"]}
+  ],
+  "arcs": [
+    ["s0", "s1"],
+    ["s1", "s0"],
+    ["s1", "s2"],
+    ["s1", "s3"],
+    ["s2", "s1"],
+    ["s3", "s3"]
+  ],
+  "expressions": [
+    "p EU (!p & (EU (!p & q)))",
+    "p EU (!p & (AU (!p & q)))",
+    "p AU (!p & (EU (!p & q)))",
+    "p AU (!p & (AU (!p & q)))"
+  ]
+}

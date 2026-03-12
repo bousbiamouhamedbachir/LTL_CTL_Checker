@@ -2,8 +2,15 @@ from utils import load_graph, parse_formula, parse_ctl
 from verifier import Switcher
 
 def main():
-
-    graph = load_graph("graph.json")
+    while True:
+        graph_path = input("Enter graph file path (e.g., graph.json): ").strip()
+        try:
+            graph = load_graph(graph_path)
+            break
+        except FileNotFoundError:
+            print(f"Error: File '{graph_path}' not found. Please try again.")
+        except Exception as e:
+            print(f"Error loading graph: {e}. Please try again.")
 
     switcher = Switcher(graph)
 

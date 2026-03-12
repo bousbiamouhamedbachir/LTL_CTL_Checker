@@ -1,0 +1,53 @@
+{
+    "states": [
+        {
+            "name": "s0",
+            "props": [
+                "p"
+            ]
+        },
+        {
+            "name": "s1",
+            "props": []
+        },
+        {
+            "name": "s2",
+            "props": [
+                "p",
+                "q"
+            ]
+        }
+    ],
+    "arcs": [
+        [
+            "s0",
+            "s0"
+        ],
+        [
+            "s0",
+            "s1"
+        ],
+        [
+            "s0",
+            "s2"
+        ],
+        [
+            "s1",
+            "s2"
+        ],
+        [
+            "s2",
+            "s0"
+        ]
+    ],
+    "expressions": [
+        "EF q",
+        "AF q",
+        "EG p",
+        "AG q",
+        "p EU q",
+        "p AU q",
+        "AG (EF (p & q))",
+        "EG (AF (p & q))"
+    ]
+}

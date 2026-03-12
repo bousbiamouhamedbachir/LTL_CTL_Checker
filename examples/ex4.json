@@ -1,0 +1,23 @@
+{
+  "states": [
+    {"name": "s1", "props": ["a"]},
+    {"name": "s2", "props": ["a"]},
+    {"name": "s3", "props": ["a", "b"]},
+    {"name": "s4", "props": ["b"]}
+  ],
+  "arcs": [
+    ["s4", "s2"],
+    ["s2", "s1"],
+    ["s2", "s3"],
+    ["s1", "s2"],
+    ["s3", "s1"]
+  ],
+  "expressions": [
+    "X a",
+    "X X X a",
+    "G b",
+    "G F a",
+    "G (b U a)",
+    "F (b U a)"
+  ]
+}
