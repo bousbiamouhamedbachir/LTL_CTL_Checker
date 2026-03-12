@@ -253,18 +253,6 @@ because `p` is not true in all reachable states.
 
 ---
 
-# Future Improvements
-
-Possible extensions:
-
-* Counterexample generation when a formula fails
-* Graph visualization
-* Full LTL grammar parser
-* Support for implication (`->`)
-* Multiple initial states
-* Petri net to transition system conversion
-
----
 
 # Educational Purpose
 
