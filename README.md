@@ -1,9 +1,9 @@
-# LTL Model Checker (Python)
+# LTL & CTL Model Checker (Python)
 
-A simple **Linear Temporal Logic (LTL) model checker** written in Python.
-This project allows you to define a **state transition system (graph)** and verify **LTL formulas** interactively from the terminal.
+A simple **Linear Temporal Logic (LTL)** and **Computation Tree Logic (CTL)** model checker written in Python.
+This project allows you to define a **state transition system (graph)** and verify temporal logic formulas interactively from the terminal.
 
-The program loads a graph from a JSON file, then lets the user type formulas that are checked against the model until the user quits.
+The program loads a graph from a JSON file and provides an interactive CLI to choose between LTL and CTL verification.
 
 ---
 
@@ -11,18 +11,16 @@ The program loads a graph from a JSON file, then lets the user type formulas tha
 
 ```
 .
-├── main.py          # Application entry point (interactive CLI)
-├── utils.py         # Graph loader and LTL formula parser
-├── verifier.py      # LTL verification logic
-
+├── main.py          # Application entry point (Logic selector & CLI)
+├── verifier.py      # Verification logic (LTLVerifier, CTLVerifier, Switcher)
+├── utils.py         # Graph loader and Formula parsers (LTL & CTL)
+├── LTL.py           # LTL operators and formula representation
+├── CTL.py           # CTL operators and formula representation
 ├── graph.py         # Graph structure (states + arcs)
-├── arc.py           # Transition between states
-├── state.py         # State representation
-├── proposition.py   # Atomic propositions
-
-├── LTL.py           # LTL operators enum and formula class
-
-├── graph.json       # Example graph input file
+├── arc.py           # Transition representation
+├── state.py         # State representation with propositions
+├── proposition.py   # Atomic proposition representation
+└── graph.json       # Example graph input file
 ```
 
 ---
@@ -30,39 +28,22 @@ The program loads a graph from a JSON file, then lets the user type formulas tha
 # Requirements
 
 * Python **3.9+**
-* No external libraries required
-
-Run with the standard Python interpreter.
+* No external libraries required.
 
 ---
 
 # How the System Works
 
-The model checker verifies **LTL properties** on a **transition system**.
+The model checker verifies temporal properties on a **Kripke-like transition system**.
 
 A transition system consists of:
+* **States**: Labeled identifiers (e.g., `s0`, `s1`).
+* **Propositions**: Atomic properties true in specific states (e.g., `p`, `q`).
+* **Arcs**: Directed transitions between states.
 
-* **States** (`s0`, `s1`, ...)
-* **Propositions** (atomic properties like `p`, `q`)
-* **Arcs** (transitions between states)
+### Graph Input File (`graph.json`)
 
-Each state can contain **zero or more propositions** that are true in that state.
-
-Example:
-
-```
-s0: {p}
-s1: {}
-s2: {q}
-```
-
----
-
-# Graph Input File
-
-The graph must be defined in a **JSON file**.
-
-Example `graph.json`:
+The model is defined in a JSON file:
 
 ```json
 {
@@ -72,193 +53,94 @@ Example `graph.json`:
     {"name": "s2", "props": ["q"]}
   ],
   "arcs": [
-    ["s0","s1"],
-    ["s1","s2"],
-    ["s2","s1"]
+    ["s0", "s1"],
+    ["s1", "s2"],
+    ["s2", "s1"]
   ]
 }
 ```
 
-Explanation:
-
-### States
-
-Each state contains:
-
-```
-name  -> state identifier
-props -> list of propositions true in this state
-```
-
-Example:
-
-```
-s0 has proposition p
-s2 has proposition q
-```
-
-### Arcs
-
-Arcs define **transitions between states**.
-
-```
-["s0","s1"]
-```
-
-means:
-
-```
-s0 → s1
-```
-
 ---
 
-# Supported LTL Operators
+# Supported Logics
 
-| Operator | Meaning    | Example |    |    |
-| -------- | ---------- | ------- | -- | -- |
-| `!`      | NOT        | `!p`    |    |    |
-| `&`      | AND        | `p & q` |    |    |
-| `        | `          | OR      | `p | q` |
-| `X`      | Next       | `X p`   |    |    |
-| `F`      | Eventually | `F q`   |    |    |
-| `G`      | Always     | `G p`   |    |    |
-| `U`      | Until      | `p U q` |    |    |
+## Linear Temporal Logic (LTL)
 
-Parentheses are supported for grouping.
+Verified over all possible infinite paths from the starting state.
 
----
+| Operator | Meaning | Example |
+| :--- | :--- | :--- |
+| `!` | **NOT** | `!p` |
+| `&` | **AND** | `p & q` |
+| `\|` | **OR** | `p \| q` |
+| `X` | **Next** | `X p` |
+| `F` | **Eventually** | `F q` |
+| `G` | **Always** | `G p` |
+| `U` | **Until** | `p U q` |
 
-# Example Formulas
+## Computation Tree Logic (CTL)
 
-Atomic proposition:
+Verified over the branching structure of the transition system.
 
-```
-p
-```
-
-Eventually:
-
-```
-F q
-```
-
-Always:
-
-```
-G p
-```
-
-Next state:
-
-```
-X p
-```
-
-Until:
-
-```
-p U q
-```
-
-Complex formulas:
-
-```
-F (p & X q)
-
-G (p | F q)
-
-!(p & q)
-
-G (p U q)
-```
+| Operator | Meaning | Example |
+| :--- | :--- | :--- |
+| `!` | **NOT** | `!p` |
+| `&` | **AND** | `p & q` |
+| `\|` | **OR** | `p \| q` |
+| `EX` | **Exists Next** | `EX p` |
+| `AX` | **All Next** | `AX p` |
+| `EF` | **Exists Eventually** | `EF p` |
+| `AF` | **All Eventually** | `AF p` |
+| `EG` | **Exists Globally** | `EG p` |
+| `AG` | **All Globally** | `AG p` |
+| `EU` | **Exists Until** | `p EU q` |
+| `AU` | **All Until** | `p AU q` |
 
 ---
 
 # Running the Program
 
-From the project folder:
-
-```
-python main.py
-```
-
-The program loads `graph.json` automatically.
-
-You will see an interactive prompt.
-
-Example:
-
-```
-LTL Model Checker
-Examples: F q , G p , p U q
-Type q to quit
-```
+1. Ensure `graph.json` is in the project directory.
+2. Run the main script:
+   ```bash
+   python main.py
+   ```
+3. Choose the logic you wish to use (1 for LTL, 2 for CTL).
+4. Enter formulas at the prompt. Type `q` to exit.
 
 ---
 
 # Example Session
 
-```
-LTL> F q
+```text
+Choose logic:
+1 - LTL
+2 - CTL
+> 1
+Using LTL
+Type formulas (examples: F q, G p, p U q)
+Type q to quit
+
+Formula> F q
 Result: True
 
-LTL> G p
-Result: False
-
-LTL> F (p & X q)
-Result: True
-
-LTL> q
-Bye!
+Formula> q
+Exiting...
 ```
-
-Typing `q` exits the program.
 
 ---
 
 # Example Graph Behavior
 
-Given the graph:
+Given a simple loop: `s0 (p) -> s1 -> s2 (q) -> s1`:
 
-```
-s0 -> s1 -> s2
-       ^    |
-       |____|
-```
-
-with:
-
-```
-s0: {p}
-s1: {}
-s2: {q}
-```
-
-Then:
-
-```
-F q = True
-```
-
-because `q` eventually becomes true in state `s2`.
-
-But:
-
-```
-G p = False
-```
-
-because `p` is not true in all reachable states.
+* **LTL**: `F q` is **True** because every path eventually hits `s2`.
+* **LTL**: `G p` is **False** because `p` is only true at the start.
+* **CTL**: `AG (EF q)` is **True** because from any state, it is possible to reach `q`.
+* **CTL**: `EX p` is **False** if `s0` is the start and it only transitions to `s1`.
 
 ---
 
-
 # Educational Purpose
 
-This project is intended as a **learning implementation of LTL model checking** for courses on:
-
-* Formal Verification
-* Model Checking
-* Temporal Logic
-* Concurrent Systems
+This project is an educational implementation of model checking algorithms, suitable for courses on Formal Verification, Temporal Logic, and Concurrent Systems.
