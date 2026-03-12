@@ -3,7 +3,7 @@
 A simple **Linear Temporal Logic (LTL)** and **Computation Tree Logic (CTL)** model checker written in Python.
 This project allows you to define a **state transition system (graph)** and verify temporal logic formulas interactively from the terminal.
 
-The program loads a graph from a JSON file and provides an interactive CLI to choose between LTL and CTL verification.
+The program provides an interactive CLI to load a model and choose between LTL and CTL verification.
 
 ---
 
@@ -20,7 +20,11 @@ The program loads a graph from a JSON file and provides an interactive CLI to ch
 ├── arc.py           # Transition representation
 ├── state.py         # State representation with propositions
 ├── proposition.py   # Atomic proposition representation
-└── graph.json       # Example graph input file
+├── examples/        # Folder containing pre-defined models and exercises
+│   ├── ex4.json
+│   ├── ex5.json
+│   └── ...
+└── graph.json       # Default example graph input file
 ```
 
 ---
@@ -41,9 +45,9 @@ A transition system consists of:
 * **Propositions**: Atomic properties true in specific states (e.g., `p`, `q`).
 * **Arcs**: Directed transitions between states.
 
-### Graph Input File (`graph.json`)
+### Graph Input File Format
 
-The model is defined in a JSON file:
+The model is defined in a JSON file. You can also include an optional `expressions` field for reference.
 
 ```json
 {
@@ -56,6 +60,10 @@ The model is defined in a JSON file:
     ["s0", "s1"],
     ["s1", "s2"],
     ["s2", "s1"]
+  ],
+  "expressions": [
+    "F q",
+    "G p"
   ]
 }
 ```
@@ -100,11 +108,11 @@ Verified over the branching structure of the transition system.
 
 # Running the Program
 
-1. Ensure `graph.json` is in the project directory.
-2. Run the main script:
+1. Run the main script:
    ```bash
    python main.py
    ```
+2. Enter the path to your graph file when prompted (e.g., `graph.json` or `examples/ex4.json`).
 3. Choose the logic you wish to use (1 for LTL, 2 for CTL).
 4. Enter formulas at the prompt. Type `q` to exit.
 
@@ -113,6 +121,7 @@ Verified over the branching structure of the transition system.
 # Example Session
 
 ```text
+Enter graph file path (e.g., graph.json): graph.json
 Choose logic:
 1 - LTL
 2 - CTL
@@ -127,17 +136,6 @@ Result: True
 Formula> q
 Exiting...
 ```
-
----
-
-# Example Graph Behavior
-
-Given a simple loop: `s0 (p) -> s1 -> s2 (q) -> s1`:
-
-* **LTL**: `F q` is **True** because every path eventually hits `s2`.
-* **LTL**: `G p` is **False** because `p` is only true at the start.
-* **CTL**: `AG (EF q)` is **True** because from any state, it is possible to reach `q`.
-* **CTL**: `EX p` is **False** if `s0` is the start and it only transitions to `s1`.
 
 ---
 
